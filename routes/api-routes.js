@@ -4,9 +4,18 @@ const Workout = require("../models/workout.js");
 
 // Route to get the latest workout
 router.get('/api/workouts', (req, res) => {
-    // Using aggregate
+    // mongo aggregate
     Workout.aggregate([
-        
+        {
+            // $addFields will add a field to the collection
+            $addFields: {
+                // totalDuration field we will be adding too
+                totalDuration: {
+                    // equal the sum
+                    $sum: "$exercises.duration"
+                }
+            }
+        }
     ])
         .then(getWorkouts => {
             res.json(getWorkouts)
